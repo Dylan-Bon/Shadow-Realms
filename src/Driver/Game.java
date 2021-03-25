@@ -971,7 +971,7 @@ public class Game extends GameCore {
     }
 
     /**
-     * Kills characters if they fall off the map.
+     * Kills characters if they fall off thed map.
      *
      * @param character Character
      */
