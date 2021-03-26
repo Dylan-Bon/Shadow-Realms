@@ -63,7 +63,7 @@ public class Game extends GameCore {
         if (currentZoneLevel < 3) {
             currentZoneLevel++;
             initialiseGame(currentZoneLevel);
-            System.out.println("advanced");
+            System.out.println("Advancing level..");
         }
     }
 
@@ -103,7 +103,7 @@ public class Game extends GameCore {
     }
 
     /**
-     * Initialises the portal sprite along with the portalNoise sound
+     * Initialises the portal sprite along with the portalNoise sound.
      */
     private void initPurplePortal() {
         Animation portalOpen = new Animation();
@@ -251,6 +251,9 @@ public class Game extends GameCore {
         }
     }
 
+    /**
+     * Plays the final 'GG' level.
+     */
     private void ggLevel() {
         complete = true;
         portal.hide();
@@ -300,10 +303,11 @@ public class Game extends GameCore {
 
         trophy.setPosition(132, 303);
         shadowSkeletonList.clear();
-
-        System.out.println("first level reset");
     }
 
+    /**
+     * Spawns enemies located in the first levels shadow realm.
+     */
     private void spawnFirstLevelShadowRealm() {
         shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(0).setStartingX(2280);
@@ -336,6 +340,9 @@ public class Game extends GameCore {
         initSkeletons(shadowSkeletonList);
     }
 
+    /**
+     * Spawns enemies located in the second levels shadow realm.
+     */
     private void spawnSecondLevelShadowRealm() {
         shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(0).setStartingX(3375);
