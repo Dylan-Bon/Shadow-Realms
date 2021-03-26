@@ -1,13 +1,13 @@
 package game2D;
 
-public class Character extends Sprite{
+public abstract class Character extends Sprite{
     final int HEALTH_MAX = 3;
     int health;
 
     private boolean jumping = false;
     private boolean sprinting = false;
     private boolean casting = false;
-    private boolean interacting = false;
+
 
     long lastHitTime = System.currentTimeMillis();
 
@@ -65,15 +65,5 @@ public class Character extends Sprite{
         this.casting = casting;
     }
 
-    public boolean isInteracting() {
-        return interacting;
-    }
 
-    public void interact() {
-        interacting = true;
-    }
-
-    public void stopInteraction() {
-        interacting = false;
-    }
 }

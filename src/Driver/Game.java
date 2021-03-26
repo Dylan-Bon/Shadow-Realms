@@ -24,25 +24,20 @@ public class Game extends GameCore {
     private int xOffset = 0;
     private int yOffset = 0;
 
-    // Driver.Game state info
+    // Game state info
     private boolean debugMode = false;
     private boolean superHealth = false;
+    private boolean teleportEnabled = false;
     private boolean complete = false;
     private int currentZoneLevel = 1;
-
-    // Player animation resources
-    private Animation idle, sprint, cast, death;
-
-    // Enemy animation resources
-    private Animation skeleIdle, skeleWalk, skeleDie, skeleAttack;
 
     // Sprite types
     private Sprite trophy;
     private Projectile fireball;
 
-    private Character player;
-    private ArrayList<Character> skeletonList = new ArrayList<>();
-    private ArrayList<Character> shadowSkeletonList = new ArrayList<>();
+    private Player player;
+    private ArrayList<Skeleton> skeletonList = new ArrayList<>();
+    private ArrayList<Skeleton> shadowSkeletonList = new ArrayList<>();
     private Sprite[] sky, clouds, sea;
 
     // Portal resources
@@ -51,7 +46,6 @@ public class Game extends GameCore {
     private int portalUseCount;
     private Sound portalNoise;
 
-    private int potionCount;
     private Sprite[] potion;
 
     private TileMap tmap = new TileMap();    // Our tile map, note that we load it in init()
@@ -187,42 +181,45 @@ public class Game extends GameCore {
      * Initialises player Sprite with the idle animation. Also initialises the player animations; sprint, cast, and death.
      */
     private void initPlayer() {
-        idle = new Animation();
+        Animation idle = new Animation();
         idle.loadAnimationFromSheet("images/Mage-Idle3-48.png", 8, 1, 120);
         idle.setAnimationSpeed(1.5f);
-        player = new Character(idle); // Initialise the player with an animation
 
-        sprint = new Animation();
+        Animation sprint = new Animation();
         sprint.loadAnimationFromSheet("images/Mage-Sprint-48.png", 7, 1, 120);
         sprint.setAnimationSpeed(1.5f);
 
-        cast = new Animation();
+        Animation cast = new Animation();
         cast.loadAnimationFromSheet("images/Mage-Cast2-48.png", 4, 1, 200);
         cast.setLoop(true);
 
-        death = new Animation();
+        Animation death = new Animation();
         death.loadAnimationFromSheet("images/Mage-Death-48.png", 8, 1, 200);
+
+        player = new Player(idle, sprint, death, cast); // Initialise the player with all animations
     }
 
     /**
      * Initialises the skeleton Animations; skeleIdle, skeleWalk, skeleDie, skeleAttack.
      */
-    private void initSkeleAnims() {
-        skeleIdle = new Animation();
+    private Animation[] initSkeleAnims() {
+        Animation skeleIdle = new Animation();
         skeleIdle.loadAnimationFromSheet("images/Enemy/Skeleton/Skeleton Idle-64.png", 11, 1, 120);
         skeleIdle.setAnimationSpeed(1.0f);
 
-        skeleWalk = new Animation();
+        Animation skeleWalk = new Animation();
         skeleWalk.loadAnimationFromSheet("images/Enemy/Skeleton/Skeleton Walk-64.png", 13, 1, 120);
         skeleWalk.setAnimationSpeed(1.0f);
 
-        skeleDie = new Animation();
+        Animation skeleDie = new Animation();
         skeleDie.loadAnimationFromSheet("images/Enemy/Skeleton/Skeleton Dead-64.png", 15, 1, 120);
         skeleDie.setAnimationSpeed(1.0f);
 
-        skeleAttack = new Animation();
+        Animation skeleAttack = new Animation();
         skeleAttack.loadAnimationFromSheet("images/Enemy/Skeleton/Skeleton Attack-64.png", 18, 1, 120);
         skeleAttack.setAnimationSpeed(1.0f);
+        Animation[] skeleAnims = {skeleIdle, skeleWalk, skeleDie, skeleAttack};
+        return skeleAnims;
     }
 
     /**
@@ -274,27 +271,27 @@ public class Game extends GameCore {
         portal.hide();
 
         if (skeletonList.isEmpty()) {
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(0).setStartingX(1471);
             skeletonList.get(0).setStartingY(400);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(1).setStartingX(1880);
             skeletonList.get(1).setStartingY(208);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(2).setStartingX(2280);
             skeletonList.get(2).setStartingY(208);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(3).setStartingX(2280);
             skeletonList.get(3).setStartingY(452);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(4).setStartingX(2500);
             skeletonList.get(4).setStartingY(452);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(5).setStartingX(3200);
             skeletonList.get(5).setStartingY(207);
         }
@@ -308,31 +305,31 @@ public class Game extends GameCore {
     }
 
     private void spawnFirstLevelShadowRealm() {
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(0).setStartingX(2280);
         shadowSkeletonList.get(0).setStartingY(208);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(1).setStartingX(2080);
         shadowSkeletonList.get(1).setStartingY(208);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(2).setStartingX(2180);
         shadowSkeletonList.get(2).setStartingY(208);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(3).setStartingX(1471);
         shadowSkeletonList.get(3).setStartingY(400);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(4).setStartingX(1371);
         shadowSkeletonList.get(4).setStartingY(400);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(5).setStartingX(415);
         shadowSkeletonList.get(5).setStartingY(208);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(6).setStartingX(500);
         shadowSkeletonList.get(6).setStartingY(208);
 
@@ -340,43 +337,43 @@ public class Game extends GameCore {
     }
 
     private void spawnSecondLevelShadowRealm() {
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(0).setStartingX(3375);
         shadowSkeletonList.get(0).setStartingY(140);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(1).setStartingX(3316);
         shadowSkeletonList.get(1).setStartingY(140);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(2).setStartingX(1229);
         shadowSkeletonList.get(2).setStartingY(364);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(3).setStartingX(1379);
         shadowSkeletonList.get(3).setStartingY(364);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(4).setStartingX(1462);
         shadowSkeletonList.get(4).setStartingY(364);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(5).setStartingX(1186);
         shadowSkeletonList.get(5).setStartingY(364);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(6).setStartingX(1138);
         shadowSkeletonList.get(6).setStartingY(364);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(7).setStartingX(486);
         shadowSkeletonList.get(7).setStartingY(428);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(8).setStartingX(446);
         shadowSkeletonList.get(8).setStartingY(428);
 
-        shadowSkeletonList.add(new Character(skeleIdle));
+        shadowSkeletonList.add(new Skeleton(initSkeleAnims()));
         shadowSkeletonList.get(9).setStartingX(2771);
         shadowSkeletonList.get(9).setStartingY(140);
 
@@ -398,43 +395,43 @@ public class Game extends GameCore {
         portal.hide();
 
         if (skeletonList.isEmpty()) {
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(0).setStartingX(1478);
             skeletonList.get(0).setStartingY(367);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(1).setStartingX(1382);
             skeletonList.get(1).setStartingY(367);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(2).setStartingX(1735);
             skeletonList.get(2).setStartingY(271);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(3).setStartingX(1448);
             skeletonList.get(3).setStartingY(207);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(4).setStartingX(1885);
             skeletonList.get(4).setStartingY(111);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(5).setStartingX(1950);
             skeletonList.get(5).setStartingY(111);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(6).setStartingX(2015);
             skeletonList.get(6).setStartingY(111);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(7).setStartingX(2094);
             skeletonList.get(7).setStartingY(111);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(8).setStartingX(2683);
             skeletonList.get(8).setStartingY(143);
 
-            skeletonList.add(new Character(skeleIdle));
+            skeletonList.add(new Skeleton(initSkeleAnims()));
             skeletonList.get(9).setStartingX(2715);
             skeletonList.get(9).setStartingY(143);
         }
@@ -449,11 +446,11 @@ public class Game extends GameCore {
      *
      * @param skeletonList ArrayList of Characters.
      */
-    private void initSkeletons(ArrayList<Character> skeletonList) {
-        for (Character skeleton : skeletonList) {
+    private void initSkeletons(ArrayList<Skeleton> skeletonList) {
+        for (Skeleton skeleton : skeletonList) {
             skeleton.setHealth(skeleton.getHEALTH_MAX());
             skeleton.setPosition(skeleton.getStartingX(), skeleton.getStartingY());
-            skeleton.setAnimation(skeleIdle);
+            skeleton.setAnimation(skeleton.getIdleAnim());
             skeleton.show();
         }
     }
@@ -470,14 +467,14 @@ public class Game extends GameCore {
         else
             player.setHealth(player.getHEALTH_MAX());
 
-        player.setAnimation(idle);
+        player.setAnimation(player.getIdleAnim());
         player.setPosition(415, 200);
         player.setVelocityX(0);
         player.setVelocityY(0);
         player.show();
 
         inShadowRealm = false;
-        potionCount = 0;
+        player.setPotionCount(0);
         portalUseCount = 0;
     }
 
@@ -541,6 +538,11 @@ public class Game extends GameCore {
         if (superHealth) { // Sets health to 99
             g.setColor(Color.red);
             g.drawString("Super Health", getWidth() - 95, 175);
+        }
+
+        if (teleportEnabled) {
+            g.setColor(Color.red);
+            g.drawString("Teleport Enabled", getWidth() - 120, 200);
         }
     }
 
@@ -776,8 +778,8 @@ public class Game extends GameCore {
      * @param elapsed           long
      * @param enemySkeletonList the list of skeleton enemies to update
      */
-    private void handleEnemySkeletons(long elapsed, ArrayList<Character> enemySkeletonList) {
-        for (Character skeleton : enemySkeletonList) {
+    private void handleEnemySkeletons(long elapsed, ArrayList<Skeleton> enemySkeletonList) {
+        for (Skeleton skeleton : enemySkeletonList) {
             if (skeleton.getY() > 0) {
                 //applyGravity(skeleton, elapsed);
                 skeleton.update(elapsed);
@@ -852,7 +854,7 @@ public class Game extends GameCore {
      * Spawn portal when all potions have been acquired.
      */
     private void spawnPortal() {
-        if (potionCount >= 3) {
+        if (player.getPotionCount() >= 3) {
             portal.show();
         }
     }
@@ -903,8 +905,8 @@ public class Game extends GameCore {
      *
      * @param enemy Character
      */
-    private void despawnEnemy(Character enemy) {
-        if (enemy.getAnimation() == skeleDie && enemy.getAnimation().getCurrFrameIndex() >= (skeleDie.countOfFrames() - 1)) {
+    private void despawnEnemy(Skeleton enemy) {
+        if (enemy.getAnimation() == enemy.getDeathAnim() && enemy.getAnimation().getCurrFrameIndex() >= (enemy.getDeathAnim().countOfFrames() - 1)) {
             enemy.setY(-6000);
         }
     }
@@ -914,8 +916,12 @@ public class Game extends GameCore {
      *
      * @param skeleton Character
      */
-    private void checkAgro(Character skeleton) {
+    private void checkAgro(Skeleton skeleton) {
         //prevent the attack animation from starting again.
+        Animation skeleAttack = skeleton.getAttackAnim();
+        Animation skeleDie = skeleton.getDeathAnim();
+        Animation skeleWalk = skeleton.getSprintAnim();
+        Animation skeleIdle = skeleton.getIdleAnim();
         if (skeleton.getAnimation() != skeleDie && (skeleton.getAnimation() != skeleAttack || (skeleton.getAnimation() == skeleAttack && skeleton.getAnimation().hasLooped()))) {
 
             if (player.getY() - skeleton.getY() >= -150 && player.getY() - skeleton.getY() <= 150) { // if player is in Y agro range
@@ -978,8 +984,8 @@ public class Game extends GameCore {
     private void fallingDeath(Character character) {
         if (character.getY() + character.getHeight() >= tmap.getPixelHeight() - 5) {
             character.setHealth(0);
-            if (character != player) {
-                checkEnemyDeath(character);
+            if (character instanceof Skeleton) {
+                checkEnemyDeath((Skeleton) character);
             }
         }
     }
@@ -990,6 +996,7 @@ public class Game extends GameCore {
      */
     private void checkPlayerDeath() {
         if (player.getHealth() < 1) {
+            Animation death = player.getDeathAnim();
             //if players animation is not set do death animation, then set it.
             if (player.getAnimation() != death) {
                 player.setY(player.getY() - 35); //bump the y co-ord up by 35 do compensate for the larger animation.
@@ -1012,8 +1019,9 @@ public class Game extends GameCore {
      *
      * @param enemy Skeleton Sprite.
      */
-    private void checkEnemyDeath(Character enemy) {
+    private void checkEnemyDeath(Skeleton enemy) {
         if (enemy.getHealth() < 1) {
+            Animation skeleDie = enemy.getDeathAnim();
             enemy.stop();
             skeleDie.start();
             enemy.setAnimation(skeleDie);
@@ -1053,16 +1061,18 @@ public class Game extends GameCore {
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        int mouseX = e.getX();
-        int mouseY = e.getY() - player.getHeight();
+        if (teleportEnabled) {
+            int mouseX = e.getX();
+            int mouseY = e.getY() - player.getHeight();
 
-        if ((int) player.getX() >= getWidth() / 2 && mouseX <= getWidth() / 2) {
-            mouseX = (int) player.getX() - (getWidth() / 2 - mouseX);
-        } else if ((int) player.getX() >= getWidth() / 2 && mouseX > getWidth() / 2) {
-            mouseX = (int) player.getX() + (mouseX - getWidth() / 2);
+            if ((int) player.getX() >= getWidth() / 2 && mouseX <= getWidth() / 2) {
+                mouseX = (int) player.getX() - (getWidth() / 2 - mouseX);
+            } else if ((int) player.getX() >= getWidth() / 2 && mouseX > getWidth() / 2) {
+                mouseX = (int) player.getX() + (mouseX - getWidth() / 2);
+            }
+            player.setPosition(mouseX, mouseY);
+            System.out.println("CHEAT ACTIVATED. Teleporting to: " + mouseX + "," + mouseY);
         }
-        player.setPosition(mouseX, mouseY);
-        System.out.println("CHEAT ACTIVATED. Teleporting to: " + mouseX + "," + mouseY);
     }
 
     /**
@@ -1085,16 +1095,18 @@ public class Game extends GameCore {
                 case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> {
                     player.setSprinting(true);
                     player.setDirectionLeft(false);
-                    player.setAnimation(sprint);
+                    player.setAnimation(player.getSprintAnim());
                 }
                 case KeyEvent.VK_LEFT, KeyEvent.VK_A -> {
                     player.setSprinting(true);
                     player.setDirectionLeft(true);
-                    player.setAnimation(sprint);
+                    player.setAnimation(player.getSprintAnim());
                 }
                 case KeyEvent.VK_SPACE -> {
+                    Animation cast = player.getCastAnim();
                     if (!player.isCasting()) {
                         player.setY(player.getY() - 14);
+
                         cast.start();
                     }
                     player.setCasting(true);
@@ -1125,12 +1137,13 @@ public class Game extends GameCore {
                 case KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_A, KeyEvent.VK_D -> {
                     player.setSprinting(false);
                     player.setVelocityX(0);
-                    player.setAnimation(idle);
+                    player.setAnimation(player.getIdleAnim());
                 }
                 case KeyEvent.VK_SPACE -> stopCasting();
                 case KeyEvent.VK_E -> player.interact();
-                case KeyEvent.VK_0 -> toggleDebugMode();
-                case KeyEvent.VK_9 -> toggleSuperHealth();
+                case KeyEvent.VK_1 -> teleportEnabled = !teleportEnabled;
+                case KeyEvent.VK_3 -> toggleDebugMode();
+                case KeyEvent.VK_2 -> toggleSuperHealth();
             }
         }
     }
@@ -1143,9 +1156,9 @@ public class Game extends GameCore {
         player.setY(player.getY() + 14);
 
         if (!player.isSprinting()) {
-            player.setAnimation(idle);
+            player.setAnimation(player.getIdleAnim());
         } else {
-            player.setAnimation(sprint);
+            player.setAnimation(player.getSprintAnim());
         }
     }
 
@@ -1189,7 +1202,7 @@ public class Game extends GameCore {
      * @param s2 Sprite potion
      */
     private void acquirePotion(Sprite s2) {
-        potionCount++;
+        player.setPotionCount(player.getPotionCount() + 1);
         s2.hide();
     }
 
@@ -1207,7 +1220,7 @@ public class Game extends GameCore {
             s2.setHealth(s2.getHealth() - 1);
             s2.updateLastHitTime();
 
-            checkEnemyDeath(s2);
+            checkEnemyDeath((Skeleton) s2);
         }
     }
 
