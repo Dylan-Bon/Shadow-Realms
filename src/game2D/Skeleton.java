@@ -7,10 +7,9 @@ public class Skeleton extends Character {
     private Animation deathAnim;
 
     /**
-     *
      * @param skeleAnims
      */
-    public Skeleton (Animation[] skeleAnims) {
+    public Skeleton(Animation[] skeleAnims) {
         super(skeleAnims[0]);
         this.idleAnim = skeleAnims[0];
         this.sprintAnim = skeleAnims[1];
