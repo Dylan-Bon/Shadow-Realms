@@ -1,15 +1,15 @@
 # Shadow-Realms
 CONTROLS
 ------------------
-ARROW KEYS (or WAD but not recommended) - for movement.
-SPACE BAR - Resummon your fireball and charge cast another one.
-'E' - Toggle interaction with a portal.
+* ARROW KEYS (or WAD but not recommended) - for movement.
+* SPACE BAR - Resummon your fireball and charge cast another one.
+* 'E' - Toggle interaction with a portal.
 
 INSTRUCTIONS
 ------------------
-Collect all the potions on a level (3 potions) to spawn a portal at the end of the map.
-Go to the portal and press 'E' to go through it and into the Shadow Realm.
-Traverse backwards through the level to find a golden cup to advance to the next level.
+* Collect all the potions on a level (3 potions) to spawn a portal at the end of the map.
+* Go to the portal and press 'E' to go through it and into the Shadow Realm.
+* Traverse backwards through the level to find a golden cup to advance to the next level.
 
 CHEATS
 ------------------
