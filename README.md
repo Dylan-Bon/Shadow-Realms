@@ -1,7 +1,7 @@
 # Shadow-Realms
 CONTROLS
 ------------------
-* ARROW KEYS (or WAD but not recommended) - for movement.
+* ARROW KEYS (or WAD but not recommended) - Movement.
 * SPACE BAR - Hold to resummon your fireball and charge cast another one.
 * 'E' - Toggle interaction with a portal.
 
