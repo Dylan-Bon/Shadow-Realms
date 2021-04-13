@@ -2,7 +2,7 @@
 CONTROLS
 ------------------
 * ARROW KEYS (or WAD but not recommended) - for movement.
-* SPACE BAR - Resummon your fireball and charge cast another one.
+* SPACE BAR - Hold to resummon your fireball and charge cast another one.
 * 'E' - Toggle interaction with a portal.
 
 INSTRUCTIONS
