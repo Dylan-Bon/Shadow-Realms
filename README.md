@@ -1,17 +1,19 @@
 # Shadow-Realms
-CONTROLS
+![image](https://user-images.githubusercontent.com/111361115/222299641-deaac819-5e88-4fad-8c91-bc6e5f1bf89c.png)
+
+CONTROLS :video_game: :joystick:
 ------------------
 * ARROW KEYS (or WAD but not recommended) - Movement.
 * SPACE BAR - Hold to resummon your fireball and charge cast another one.
 * 'E' - Toggle interaction with a portal.
 
-INSTRUCTIONS
+INSTRUCTIONS :closed_book:
 ------------------
 * Collect all the potions on a level (3 potions) to spawn a portal at the end of the map.
 * Go to the portal and press 'E' to go through it and into the Shadow Realm.
 * Traverse backwards through the level to find a golden cup to advance to the next level.
 
-CHEATS
+CHEATS :clown_face:
 ------------------
 * '1' - Toggle the telport cheat. When enabled the player may click to any position on screen
 	and will be teleported to there.
